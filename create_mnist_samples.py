@@ -74,5 +74,6 @@ for i in range(rows):
         canvas[i*28:(i+1)*28, j*28:(j+1)*28] = x_fake.data[idx]
 ax.imshow(canvas, cmap='gray')
 
-plt.savefig("GAN_mnist_generator.pdf")
+cwd=os.getcwd()
+plt.savefig(cwd+"plots/GAN_mnist_generator.pdf")
 
