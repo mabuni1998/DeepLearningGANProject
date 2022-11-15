@@ -1,5 +1,4 @@
 import wandb
-wandb.init(project="mnist-GAN", entity="gan_project_cm")
 import matplotlib.pyplot as plt
 import numpy as np
 plt.style.use(["seaborn-deep", "seaborn-whitegrid"])
@@ -15,7 +14,9 @@ from functools import reduce
 from scipy.linalg import sqrtm
 from torch import nn
 from scipy.linalg import sqrtm
+from torchvision import transforms
 import os
+from FID_score import calculate_fid
 
 wandb.config = {
   "learning_rate": 2e-4,
@@ -25,22 +26,9 @@ wandb.config = {
 }
 config = wandb.config
 
+run = wandb.init(project="mnist-GAN", entity="gan_project_cm",config=config)
 
 
-def calculate_fid(train, target):
-	# calculate mean and covariance statistics
-	mu1, sigma1 = train.mean(axis=0), np.cov(train, rowvar=False)
-	mu2, sigma2 = target.mean(axis=0), np.cov(target, rowvar=False)
-	# calculate sum squared difference between means
-	ssdiff = np.sum((mu1 - mu2)**2.0)
-	# calculate sqrt of product between cov
-	covmean = sqrtm(sigma1.dot(sigma2))
-	# check and correct imaginary numbers from sqrt
-	if np.iscomplexobj(covmean):
-		covmean = covmean.real
-	# calculate score
-	fid = ssdiff + np.trace(sigma1 + sigma2 - 2.0 * covmean)
-	return fid
 
 
 # The digit classes to use, these need to be in order because
@@ -67,9 +55,9 @@ def stratified_sampler(labels):
 batch_size = config["batch_size"]
 # The loaders perform the actual work
 train_loader = DataLoader(dset_train, batch_size=batch_size,
-                          sampler=stratified_sampler(dset_train.train_labels), pin_memory=cuda,drop_last=True)
+                          sampler=stratified_sampler(dset_train.targets), pin_memory=cuda,drop_last=True)
 test_loader  = DataLoader(dset_test, batch_size=batch_size, 
-                          sampler=stratified_sampler(dset_test.test_labels), pin_memory=cuda)
+                          sampler=stratified_sampler(dset_test.targets), pin_memory=cuda)
 
 
 
@@ -125,12 +113,9 @@ discriminator_optim = torch.optim.Adam(discriminator.parameters(), lr, betas=(0.
 
 
 
-
-
-
 discriminator_loss, generator_loss = [], []
 
-num_epochs = 50
+num_epochs = config["epochs"]
 for epoch in range(num_epochs):
     batch_d_loss, batch_g_loss = [], []
     
@@ -166,12 +151,27 @@ for epoch in range(num_epochs):
     
 
     # Use generated data
-    x_fake.data = x_fake.data.cpu()
+    x_fake.data = x_fake.data
     
-    fid_score =calculate_fid(x_fake.data.numpy().reshape(batch_size,-1),x_true.data.cpu().numpy().reshape(batch_size,-1))
+    fid_score =calculate_fid(torch.cat([x_fake.data, x_fake.data, x_fake.data], dim=1).to(device),torch.cat([x_true.data,x_true.data, x_true.data], dim=1).to(device))
     print("FID score: {fid:.2f}".format(fid=fid_score))
         
     wandb.log({'epoch': epoch+1, 'Generator loss': g_loss, 'Discriminator loss': d_loss, 'FID Score': fid_score})
 
     wandb.watch(discriminator)
     wandb.watch(generator)
+
+#Save model
+generatorpath = os.getcwd()+'/models/GAN_mnist_g.pth'
+discriminatorpath = os.getcwd()+'/models/GAN_mnist_d.pth'
+
+torch.save(generator.state_dict(),generatorpath )
+torch.save(discriminator.state_dict(),discriminatorpath )
+# Save as artifact for version control.
+artifact = wandb.Artifact('discriminator', type='model')
+artifact.add_file(discriminatorpath)
+run.log_artifact(artifact)
+artifact = wandb.Artifact('generator', type='model')
+artifact.add_file(generatorpath)
+run.log_artifact(artifact)
+wandb.run.finish()

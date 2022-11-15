@@ -1,0 +1,8 @@
+
+[4mReloaded modules[24m: FID_score, netrc
+c:\users\mabun\onedrive\dokumenter\dtu\10.semester\deep_learning\deeplearningganproject\create_mnist_samples.py:3: MatplotlibDeprecationWarning: The seaborn styles shipped by Matplotlib are deprecated since 3.6, as they no longer correspond to the styles shipped by seaborn. However, they will remain available as 'seaborn-v0_8-<style>'. Alternatively, directly use the seaborn API instead.
+  plt.style.use(["seaborn-deep", "seaborn-whitegrid"])
+c:\users\mabun\onedrive\dokumenter\dtu\10.semester\deep_learning\deeplearningganproject\create_mnist_samples.py:3: MatplotlibDeprecationWarning: The seaborn styles shipped by Matplotlib are deprecated since 3.6, as they no longer correspond to the styles shipped by seaborn. However, they will remain available as 'seaborn-v0_8-<style>'. Alternatively, directly use the seaborn API instead.
+  plt.style.use(["seaborn-deep", "seaborn-whitegrid"])
+C:\Users\mabun\python_venv\torch\lib\site-packages\torchvision\models\feature_extraction.py:174: UserWarning: NOTE: The nodes obtained by tracing the model in eval mode are a subsequence of those obtained in train mode. When choosing nodes for feature extraction, you may need to specify output nodes for train and eval mode separately.
+  warnings.warn(msg + suggestion_msg)

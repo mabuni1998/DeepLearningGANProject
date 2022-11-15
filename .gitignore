@@ -1,0 +1,4 @@
+push.sh
+pullv2.sh
+MNIST/*
+models/*
