@@ -1,0 +1,40 @@
+#Install ubuntu, often you have to enable WSL in windows settings. Guides can be found online.
+#Once installed log into HPC in Ubuntu terminal (you have to be on VPN or DTU network if you don't have SSH-keys set up. Guide for setting up SSH-keys: https://www.hpc.dtu.dk/?page_id=4317):
+
+ssh s******@login.gbar.dtu.dk
+
+#Make directories for project:
+
+mkdir Deep_Learning
+
+#Make directory for error and logfiles
+cd DeepLearning
+mkdir err_files
+mkdir log_files
+
+#Run the following in the terminal:
+
+source /dtu/sw/dcc/dcc-sw.bash
+module load cuda/11.3
+module load cudnn/v8.2.0.53-prod-cuda-11.3
+module load python/3.9.9
+
+#Make virtual environment
+python3 -m venv pytorch_env
+
+#Activate virtual environment
+
+source DeepLearning/pytorch_env/bin/activate
+
+#Ensure that pip is installed
+
+python -m ensurepip --default-pip
+
+#Install pytorch and other packages:
+
+python3 -m pip install torch,torchvision,sklearn,matplotlib,numpy,wandb,scipy,requests,PyYaml,psutil,GitPython,click
+
+
+
+
+
