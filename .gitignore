@@ -4,3 +4,6 @@ MNIST/*
 models/*
 wandb/*
 artifacts/*
+
+# Don't push sh files
+*.sh
