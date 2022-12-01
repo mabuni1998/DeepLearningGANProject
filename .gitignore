@@ -4,3 +4,6 @@ MNIST/*
 models/*
 wandb/*
 artifacts/*
+
+# Ignore sh files
+*.sh
