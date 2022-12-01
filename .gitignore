@@ -7,3 +7,4 @@ artifacts/*
 
 # Don't push sh files
 *.sh
+.sh
