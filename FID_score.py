@@ -7,35 +7,37 @@ from torchvision.models.feature_extraction import get_graph_node_names
 from torchvision.models.feature_extraction import create_feature_extractor
 cwd = getcwd()
 
-#Functions for calculating FID
-
-preprocess = transforms.Compose([
-    transforms.Resize(299),
-    transforms.CenterCrop(299),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
-
-inception_mdl = models.inception_v3(init_weights=True)
-
-is_cuda = torch.cuda.is_available()
-if is_cuda:
-    inception_mdl = inception_mdl.cuda()
-
-inception_mdl.load_state_dict(torch.load(cwd+"/models/inception_v3_google-0cc3c7bd.pth"))  
-inception_mdl.eval();
-# extract train and eval layers from the model
-train_nodes, eval_nodes = get_graph_node_names(inception_mdl)
-
-# remove the last layer
-return_nodes = eval_nodes[:-1]
-
-# create a feature extractor for each intermediary layer
-feat_inception = create_feature_extractor(inception_mdl, return_nodes=return_nodes)
-if is_cuda:
-    feat_inception = feat_inception.cuda()
-    
 
 def calculate_fid(train, target):
+    
+    #Functions for calculating FID
+
+    preprocess = transforms.Compose([
+        transforms.Resize(299),
+        transforms.CenterCrop(299),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+
+    inception_mdl = models.inception_v3(init_weights=True)
+
+    is_cuda = torch.cuda.is_available()
+    if is_cuda:
+        inception_mdl = inception_mdl.cuda()
+
+    inception_mdl.load_state_dict(torch.load(cwd+"/models/inception_v3_google-0cc3c7bd.pth"))  
+    inception_mdl.eval();
+    # extract train and eval layers from the model
+    train_nodes, eval_nodes = get_graph_node_names(inception_mdl)
+
+    # remove the last layer
+    return_nodes = eval_nodes[:-1]
+
+    # create a feature extractor for each intermediary layer
+    feat_inception = create_feature_extractor(inception_mdl, return_nodes=return_nodes)
+    if is_cuda:
+        feat_inception = feat_inception.cuda()
+        
+        
     train = preprocess(train)
     target = preprocess(target)
     train = feat_inception(train)

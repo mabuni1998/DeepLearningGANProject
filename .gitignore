@@ -3,3 +3,4 @@ pullv2.sh
 MNIST/*
 models/*
 wandb/*
+artifacts/*

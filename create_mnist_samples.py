@@ -16,18 +16,17 @@ from scipy.linalg import sqrtm
 from torchvision import transforms
 import os
 from FID_score import calculate_fid
+from WGAN_mnist_weightclipping import generator
+#import wandb
+#run = wandb.init()
 
-import wandb
-run = wandb.init()
-
-#Save model
-generatorpath = os.getcwd()+'/models/GAN_mnist_g.pth'
-discriminatorpath = os.getcwd()+'/models/GAN_mnist_d.pth'
+#Load model
+generatorpath = os.getcwd()+'/models/WGAN_clip_mnist_g.pth'
 
 
 #artifact = run.use_artifact('gan_project_cm/mnist-GAN/'+'generator:v0', type='model')
 #artifact_dir = artifact.download()
-
+"""
 latent_dim =100
 generator = nn.Sequential(
     # nn.ConvTranspose2d can be seen as the inverse operation
@@ -46,6 +45,7 @@ generator = nn.Sequential(
     #nn.Sigmoid() # Image intensities are in [0, 1]
     nn.Tanh()
 )
+"""
 generator.load_state_dict(torch.load(generatorpath,map_location=device))
 
 
@@ -75,5 +75,5 @@ for i in range(rows):
 ax.imshow(canvas, cmap='gray')
 
 cwd=os.getcwd()
-plt.savefig(cwd+"plots/GAN_mnist_generator.pdf")
+plt.savefig(cwd+"/plots/GAN_mnist_generator.pdf")
 
