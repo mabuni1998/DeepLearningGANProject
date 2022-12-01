@@ -34,6 +34,16 @@ python -m ensurepip --default-pip
 
 python3 -m pip install torch,torchvision,sklearn,matplotlib,numpy,wandb,scipy,requests,PyYaml,psutil,GitPython,click
 
+# run job
+bsub < jobfile.sh
+
+# Edit files 
+nano jobfile.sh
+
+# Use gpuv100
+
+# TIP: change files locally, then send them over to HPC with ./push.sh 
+
 
 
 
