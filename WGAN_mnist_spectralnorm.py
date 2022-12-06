@@ -22,7 +22,7 @@ from FID_score import calculate_fid
 wandb.config = {
   "learning_rate": 2e-4,
   "epochs": 50,
-  "batch_size": 64,
+  "batch_size": 128,
   "latent_dim":100
 }
 config = wandb.config
@@ -37,13 +37,13 @@ generator = nn.Sequential(
     # upscaled image.
     nn.ConvTranspose2d(latent_dim, 256, kernel_size=3, stride=2),
     nn.BatchNorm2d(256),
-    nn.ReLU(),
+    nn.ReLU(True),
     nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2),
     nn.BatchNorm2d(128),
-    nn.ReLU(),
+    nn.ReLU(True),
     nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
     nn.BatchNorm2d(64),
-    nn.ReLU(),
+    nn.ReLU(True),
     nn.ConvTranspose2d(64, 1, kernel_size=2, stride=2),
     #nn.Sigmoid() # Image intensities are in [0, 1]
     nn.Tanh()
@@ -57,13 +57,13 @@ class Flatten(nn.Module):
 # and decides whether it is generated or not.
 discriminator = nn.Sequential(
     spectral_norm(nn.Conv2d(1, 64, kernel_size=4, stride=2)),
-    nn.LeakyReLU(0.2),
+    nn.ReLU(True),
     spectral_norm(nn.Conv2d(64, 128, kernel_size=4, stride=2)),
-    nn.BatchNorm2d(128),
-    nn.LeakyReLU(0.2),
+    nn.LayerNorm([128,5,5]),
+    nn.ReLU(True),
     spectral_norm(nn.Conv2d(128, 256, kernel_size=4, stride=2)),
-    nn.BatchNorm2d(256),
-    nn.LeakyReLU(0.2),
+    nn.LayerNorm([256,1,1]),
+    nn.ReLU(True),
     Flatten(),
     spectral_norm(nn.Linear(256, 1)),
     #nn.Sigmoid()
@@ -160,7 +160,7 @@ if __name__ == "__main__":
         fid_score =calculate_fid(torch.cat([x_fake.data, x_fake.data, x_fake.data], dim=1).to(device),torch.cat([x_true.data,x_true.data, x_true.data], dim=1).to(device))
         print("FID score: {fid:.2f}".format(fid=fid_score))
             
-        wandb.log({'epoch': epoch+1, 'Generator loss': g_loss, 'Discriminator loss': d_loss, 'FID Score': fid_score})
+        wandb.log({'epoch': epoch+1, 'Generator loss': generator_loss[-1], 'Discriminator loss': discriminator_loss[-1], 'FID Score': fid_score})
     
         wandb.watch(discriminator)
         wandb.watch(generator)

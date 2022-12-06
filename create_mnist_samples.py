@@ -16,12 +16,22 @@ from scipy.linalg import sqrtm
 from torchvision import transforms
 import os
 from FID_score import calculate_fid
-from WGAN_mnist_weightclipping import generator
+from models_file import get_gan_models
 #import wandb
 #run = wandb.init()
+config = {
+  "learning_rate": 2e-4,
+  "epochs": 100,
+  "batch_size": 128,
+  "latent_dim":100,
+  "clipping":0.02,
+  "nch":12,
+  "lambda_gp":10
+}
+generator,d = get_gan_models('GP','mnist',config)
 
 #Load model
-generatorpath = os.getcwd()+'/models/WGAN_clip_mnist_g.pth'
+generatorpath = os.getcwd()+'/models/mnist-WGAN_GP_g.pth'
 
 
 #artifact = run.use_artifact('gan_project_cm/mnist-GAN/'+'generator:v0', type='model')

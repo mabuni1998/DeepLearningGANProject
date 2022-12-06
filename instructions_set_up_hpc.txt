@@ -1,11 +1,11 @@
-#Install ubuntu, often you have to enable WSL in windows settings. Guides can be found online.
+#Install ubuntu  often you have to enable WSL in windows settings. Guides can be found online.
 #Once installed log into HPC in Ubuntu terminal (you have to be on VPN or DTU network if you don't have SSH-keys set up. Guide for setting up SSH-keys: https://www.hpc.dtu.dk/?page_id=4317):
 
 ssh s******@login.gbar.dtu.dk
 
 #Make directories for project:
 
-mkdir Deep_Learning
+mkdir DeepLearning
 
 #Make directory for error and logfiles
 cd DeepLearning
@@ -24,7 +24,7 @@ python3 -m venv pytorch_env
 
 #Activate virtual environment
 
-source DeepLearning/pytorch_env/bin/activate
+source ~/DeepLearning/pytorch_env/bin/activate
 
 #Ensure that pip is installed
 
@@ -32,17 +32,23 @@ python -m ensurepip --default-pip
 
 #Install pytorch and other packages:
 
-python3 -m pip install torch,torchvision,sklearn,matplotlib,numpy,wandb,scipy,requests,PyYaml,psutil,GitPython,click
+python3 -m pip install torch torchvision sklearn matplotlib numpy wandb scipy requests PyYaml psutil GitPython click
 
-# run job
+#Good commands:
+#View 100 lines of file: test.sh:
+tail -100 test.sh
+#Submit file: jobfile.sh:
 bsub < jobfile.sh
+#Change directory to mappe:
+cd mappe
+#View current directory list:
+ls
+#edit document test.sh
+nano test.sh
+#Send files locally via push:
+./push.sh
 
-# Edit files 
-nano jobfile.sh
 
-# Use gpuv100
-
-# TIP: change files locally, then send them over to HPC with ./push.sh 
 
 
 
