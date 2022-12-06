@@ -37,7 +37,7 @@ def calculate_fid(train, target):
     if is_cuda:
         feat_inception = feat_inception.cuda()
         
-        
+     
     train = preprocess(train)
     target = preprocess(target)
     train = feat_inception(train)
