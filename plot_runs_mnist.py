@@ -11,10 +11,12 @@ matplotlib.rcParams['mathtext.fontset'] = 'cm'
 
 
 df_GAN = pd.read_csv(cwd+"/data_for_plots/mnist_GAN.csv")
-df_spectralnorm = pd.read_csv(cwd+"/data_for_plots/mnist_spectralnorm.csv")
-df_weightclipping = pd.read_csv(cwd+"/data_for_plots/mnist_weightclipping.csv")
+df_spectralnorm = pd.read_csv(cwd+"/data_for_plots/mnist_spec.csv")
+df_weightclipping = pd.read_csv(cwd+"/data_for_plots/mnist_weight.csv")
+df_GP = pd.read_csv(cwd+"/data_for_plots/mnist_GP.csv")
 
-data_list = [df_GAN,df_spectralnorm,df_weightclipping]
+
+data_list = [df_GAN,df_spectralnorm,df_weightclipping,df_GP]
 epochs=df_GAN["Step"].to_numpy()
 
 mean_list = []
@@ -23,9 +25,9 @@ for d in data_list:
     mean_list.append(d.mean(axis=1).to_numpy())
     std_list.append(d.std(axis=1).to_numpy())
  
-colors = ["red","blue","green"]
-legends=["GAN","WGAN-SN","WGAN-WC"]
-fig,ax = plt.subplots(1,1,figsize=(9,4.5))
+colors = ["red","blue","green",'darkorange']
+legends=["GAN","WGAN-SN","WGAN-WC","WGAN-GP"]
+fig,ax = plt.subplots(1,1,figsize=(9,5.5))
 plt.subplots_adjust()
 for i in range(len(data_list)):    
     ax.plot(epochs,mean_list[i],color=colors[i],label=legends[i])
@@ -33,5 +35,7 @@ for i in range(len(data_list)):
 ax.legend(loc="best")
 ax.set_xlabel("Epochs")
 ax.set_ylabel("FID-Score")
-ax.set_title("MNIST")
+ax.set_title("MNIST - 10 experiments")
+ax.set_ylim(0,80)
 plt.tight_layout()
+plt.savefig(cwd+"/plots/mnist_runs.svg")

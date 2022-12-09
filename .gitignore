@@ -4,6 +4,7 @@ MNIST/*
 models/*
 wandb/*
 artifacts/*
+cifar-10-batches-py/*
 
 # Don't push sh files
 *.sh

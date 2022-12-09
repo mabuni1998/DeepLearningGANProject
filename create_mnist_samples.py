@@ -17,6 +17,12 @@ from torchvision import transforms
 import os
 from FID_score import calculate_fid
 from models_file import get_gan_models
+import matplotlib
+
+font = {'family':'serif','size':20}
+matplotlib.rc('font',**font)
+matplotlib.rcParams['mathtext.fontset'] = 'cm'
+
 #import wandb
 #run = wandb.init()
 config = {
@@ -28,14 +34,15 @@ config = {
   "nch":12,
   "lambda_gp":10
 }
-generator,d = get_gan_models('GP','mnist',config)
+generator,d = get_gan_models('gan','mnist',config)
 
 #Load model
-generatorpath = os.getcwd()+'/models/mnist-WGAN_GP_g.pth'
 
 
-#artifact = run.use_artifact('gan_project_cm/mnist-GAN/'+'generator:v0', type='model')
+#artifact = run.use_artifact('gan_project_cm/mnist-GAN/'+'generator:v21', type='model')
 #artifact_dir = artifact.download()
+generatorpath = os.getcwd()+'/artifacts/generator-v21/mnist-GAN_g.pth'
+
 """
 latent_dim =100
 generator = nn.Sequential(
@@ -70,9 +77,9 @@ with torch.no_grad():
 x_fake.data = x_fake.data.cpu()
 
 # -- Plotting --
-f, ax = plt.subplots(1, 1, figsize=(18, 7))
+f, ax = plt.subplots(1, 1, figsize=(9, 9))
 
-ax.set_title('Samples from generator')
+ax.set_title('MNIST GAN')
 ax.axis('off')
 
 rows, columns = 8, 8
@@ -83,7 +90,7 @@ for i in range(rows):
         idx = i % columns + rows * j
         canvas[i*28:(i+1)*28, j*28:(j+1)*28] = x_fake.data[idx]
 ax.imshow(canvas, cmap='gray')
-
+plt.tight_layout()
 cwd=os.getcwd()
-plt.savefig(cwd+"/plots/GAN_mnist_generator.pdf")
+plt.savefig(cwd+"/plots/mnist_sample_gan.svg")
 

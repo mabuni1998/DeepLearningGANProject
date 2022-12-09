@@ -54,16 +54,16 @@ def get_gan_models(modelname,dataset,config):
             # nn.ConvTranspose2d can be seen as the inverse operation
             # of Conv2d, where after convolution we arrive at an
             # upscaled image.
-            nn.ConvTranspose2d(latent_dim, 4*nch, kernel_size=3, stride=2,bias=False),
+            nn.ConvTranspose2d(latent_dim, 4*nch, kernel_size=4, stride=2,padding=0,bias=False),
             nn.BatchNorm2d(4*nch),
             nn.ReLU(True),
-            nn.ConvTranspose2d(4*nch, 2*nch, kernel_size=3, stride=2,bias=False),
+            nn.ConvTranspose2d(4*nch, 2*nch, kernel_size=3, stride=2,padding=1,bias=False),
             nn.BatchNorm2d(2*nch),
             nn.ReLU(True),
-            nn.ConvTranspose2d(2*nch, nch, kernel_size=2, stride=2,bias=False),
+            nn.ConvTranspose2d(2*nch, nch, kernel_size=4, stride=2,padding=1,bias=False),
             nn.BatchNorm2d(nch),
             nn.ReLU(True),
-            nn.ConvTranspose2d(nch, 1, kernel_size=2, stride=2),
+            nn.ConvTranspose2d(nch, 1, kernel_size=4, stride=2,padding=1),
             nn.Tanh()
         ).to(device)
         
@@ -71,15 +71,15 @@ def get_gan_models(modelname,dataset,config):
         # The discriminator takes an image (real or fake)
         # and decides whether it is generated or not.
         discriminator = nn.Sequential(
-            norm(nn.Conv2d(1, nch, kernel_size=2, stride=2)),
+            norm(nn.Conv2d(1, nch, kernel_size=4, stride=2,padding=1)),
             nn.ReLU(True),
-            norm(nn.Conv2d(nch, 2*nch, kernel_size=2, stride=2,bias=False)),
+            norm(nn.Conv2d(nch, 2*nch, kernel_size=4, stride=2,padding=1,bias=False)),
             bn([2*nch,7,7]),
             nn.ReLU(True),
-            norm(nn.Conv2d(2*nch, 4*nch, kernel_size=3, stride=2,bias=False)),
-            bn([4*nch,3,3]),
+            norm(nn.Conv2d(2*nch, 2*nch, kernel_size=3, stride=2,padding=1,bias=False)),
+            bn([2*nch,4,4]),
             nn.ReLU(True),
-            norm(nn.Conv2d(4*nch, 1, kernel_size=3, stride=2,bias=False)),
+            norm(nn.Conv2d(2*nch, 1, kernel_size=4, stride=2,padding=0)),
             sm
         ).to(device)
         

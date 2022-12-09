@@ -19,7 +19,7 @@ from models_file import get_gan_models
 wandb.config = {
   "learning_rate": 2e-4,
   "epochs": 50,
-  "batch_size": 128,
+  "batch_size": 64,
   "latent_dim":100,
   "clipping":0.02,
   "nch":12,
