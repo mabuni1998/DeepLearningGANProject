@@ -18,15 +18,12 @@ def calculate_fid(train, target):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    inception_mdl = models.inception_v3(init_weights=True)
-
+    inception_mdl = torch.hub.load('pytorch/vision:v0.10.0', 'inception_v3', pretrained=True)
+    inception_mdl.eval()
     is_cuda = torch.cuda.is_available()
     if is_cuda:
         inception_mdl = inception_mdl.cuda()
-
-    inception_mdl.load_state_dict(torch.load(cwd+"/models/inception_v3_google-0cc3c7bd.pth"))  
-    inception_mdl.eval();
-    # extract train and eval layers from the model
+    
     train_nodes, eval_nodes = get_graph_node_names(inception_mdl)
 
     # remove the last layer

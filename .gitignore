@@ -1,7 +1,6 @@
 push.sh
 pullv2.sh
 MNIST/*
-models/*
 wandb/*
 artifacts/*
 cifar-10-batches-py/*
